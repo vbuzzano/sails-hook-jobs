@@ -1,0 +1,30 @@
+{
+  "name": "sails-hook-jobs",
+  "version": "0.1.0",
+  "description": "Sails JS hook to add async background jobs, using agenda (https://www.npmjs.com/package/agenda).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vbuzzano/sails-hook-jobs.git"
+  },
+  "author": "Vincent Buzzano <vincent.buzzano@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vbuzzano/sails-hook-jobs/issues"
+  },
+  "homepage": "https://github.com/vbuzzano/sails-hook-jobs",
+  "sails": {
+    "isHook": true
+  },
+  "dependencies": {
+    "agenda": "^0.6.26",
+    "include-all": "^0.1.6",
+    "lodash": "^2.4.1"
+  },
+  "devDependencies": {
+    "sails": "~0.11.0"
+  }
+}
