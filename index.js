@@ -8,10 +8,19 @@ module.exports = function(sails) {
 
   agenda.sails = sails;
 
+  var stopServer = function() {
+    agenda.stop(function() {
+      console.log("agenda stopped");
+    });
+  };
+
+  sails.on("lower", stopServer);
+  sails.on("lowering", stopServer);
+
   // return hook
   return {
     
-    // expose agenda in sails.hook.sails-hook-jobs.agenda
+    // expose agenda in sails.hooks.jobs.agenda
     jobs: agenda,
     
     // Defaults config
@@ -59,16 +68,10 @@ module.exports = function(sails) {
       // init jobs
       hook.initJobs(jobs);
 
-      sails.log.verbose("hook-jobs initialized")
-
-
       // Lets wait on some of the sails core hooks to
       // finish loading before we load our hook
       // that talks about cats. 
       var eventsToWaitFor = [];
-
-//      if (sails.hooks.policies)
-//        eventsToWaitFor.push('hook:policies:bound');
 
       if (sails.hooks.orm)
         eventsToWaitFor.push('hook:orm:loaded');
@@ -78,10 +81,12 @@ module.exports = function(sails) {
 
       sails.after(eventsToWaitFor, function(){
         
-        // start agenda
-        agenda.start();
-        sails.log.verbose("hook-jobs started")
-
+//        if (jobs.length > 0) {
+          // start agenda
+          agenda.start();
+          sails.log.verbose("sails jobs started")
+//        }
+        
         // Now we will return the callback and our hook
         // will be usable.
         return cb();
@@ -108,7 +113,10 @@ module.exports = function(sails) {
             var options = (typeof _job.options === 'object')?_job.options:{}
               , freq = _job.frequency
               , error = false;
-            agenda.define(_name, options, _job.run);
+
+            if (typeof _job.run === "function")
+              agenda.define(_name, options, _job.run);
+
             log += "-> Job '" + _name + "' found in '" + namespace + "." + name + "', defined in agenda";
             if (typeof freq === 'string') {
               freq = freq.trim().toLowerCase();

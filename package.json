@@ -1,6 +1,6 @@
 {
   "name": "sails-hook-jobs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Sails JS hook to add async background jobs, using agenda (https://www.npmjs.com/package/agenda).",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "agenda": "^0.6.26",
+    "agenda-ui": "0.0.6",
     "include-all": "^0.1.6",
     "lodash": "^2.4.1"
   },
