@@ -9,14 +9,14 @@
 var os = require("os");
 
 module.exports.jobs = {
-    "jobsDirectory": "api/jobs",
-    "db": { 
-        "address"    : "localhost:27017/contentbase-jobs-test",
-        "collection" : "agendaJobs" 
-    },
-    "name": os.hostname() + '-' + process.pid,
-    "processEvery": "10 seconds",
-//    "maxConcurrency": 20,
-//    "defaultConcurrency": 5,
-//    "defaultLockLifetime": 10000,
+  "jobsDirectory": "api/jobs",
+  "db": { 
+    "address"    : "localhost:27017/jobs",
+    "collection" : "agendaJobs" 
+  },
+  "name": os.hostname() + '-' + process.pid,
+  "processEvery": "10 seconds",
+//  "maxConcurrency": 20,
+//  "defaultConcurrency": 5,
+//  "defaultLockLifetime": 10000
 };
