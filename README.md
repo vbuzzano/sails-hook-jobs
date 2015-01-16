@@ -2,7 +2,7 @@
 
 Sails JS hook to add async background jobs.
 
-This project used agenda as the job engine  
+This project use "agenda" as the job engine  
  - github: https://github.com/rschmukler/agenda
  - npmjs: https://www.npmjs.com/package/agenda
 
