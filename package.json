@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "agenda": "^0.6.26",
-    "agenda-ui": "0.0.6",
     "include-all": "^0.1.6",
     "lodash": "^2.4.1"
   },
