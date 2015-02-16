@@ -62,7 +62,7 @@ Simply create a js file (name ending with Job.js, eg: myJob.js) in api/jobs or i
             //disabled: false,
     
             // method can be 'every <interval>', 'schedule <when>' or now
-            frequency: 'every 5 secondes',
+            frequency: 'every 5 seconds',
     
             // Jobs options
             //options: {
