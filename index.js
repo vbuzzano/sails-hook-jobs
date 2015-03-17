@@ -73,7 +73,7 @@ module.exports = function(sails) {
       // Find all jobs
       var jobs = require('include-all')({
           dirname     : sails.config.appPath + '/' + config.jobsDirectory,
-          filter      : /(.+Job).+$/,
+          filter      : /(.+Job).(?:js|coffee)$/,
           excludeDirs : /^\.(git|svn)$/,
           optional    : true
       });
