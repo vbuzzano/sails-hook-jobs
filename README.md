@@ -50,6 +50,7 @@ Copy this configurations file and save it to config/jobs.js
 ## How to define and schedule jobs
 
 Simply create a js file (name ending with Job.js, eg: myJob.js) in api/jobs or in the 'jobsDirectory'.
+(coffee script supported.)
 
     module.exports = function(agenda) {
         var job = {
