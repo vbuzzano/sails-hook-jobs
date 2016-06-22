@@ -1,4 +1,4 @@
-var CronParser = require('./node_modules/cron/lib/cron-parser.js');
+var CronParser = require('cron/lib/cron-parser');
 var cronParser = new CronParser;
 
 module.exports = function(sails) {
