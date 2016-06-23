@@ -1,5 +1,4 @@
-var CronParser = require('cron/lib/cron-parser');
-var cronParser = new CronParser;
+var CronJob = require('cron').CronJob;
 
 module.exports = function(sails) {
 
@@ -144,20 +143,22 @@ module.exports = function(sails) {
                 var when = freq.substr(9).trim();
                 agenda.schedule(when, _name, _job.data);
                 log += " and scheduled " + when;
+                //No error is thrown, so continue with creating an agenda.
               } else if (freq === 'now') {
                 agenda.now(_name, _job.data);
                 log += " and started";
               } else {
                 //last test for freq to see if its a cron string.
                 try{
-                  cronParser.parse(freq);
-                  // cron parsing successful. sending to agenda.every
+                  //This will throw an error when freq is not a cron string
+                  new CronJob(freq);
+                  //No error is thrown, so continue with creating an agenda.
                   agenda.every(freq, _name, _job.data);
-                  log += " and scheduled for this/these crontime(s)";
+                  log += " and scheduled for this(these) crontime(s) "+ "freq";
                 }catch(err){
                   //failed to parse the string as a cronTime(s)
                   error = true;
-                  log += ". But the frequency, " + freq + " is not supported";
+                  log += ". But the frequency, '" + freq + "' is not supported";
                 }
               }
             }
