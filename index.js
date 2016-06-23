@@ -143,7 +143,6 @@ module.exports = function(sails) {
                 var when = freq.substr(9).trim();
                 agenda.schedule(when, _name, _job.data);
                 log += " and scheduled " + when;
-                //No error is thrown, so continue with creating an agenda.
               } else if (freq === 'now') {
                 agenda.now(_name, _job.data);
                 log += " and started";
