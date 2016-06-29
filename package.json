@@ -21,11 +21,22 @@
   },
   "dependencies": {
     "agenda": "^0.6.26",
+    "cron": "^1.1.0",
     "include-all": "^0.1.6",
     "lodash": "^2.4.1"
   },
   "devDependencies": {
     "sails": "~0.11.0"
   },
-  "keywords": [ "sails", "sailsjs", "agenda", "jobs", "hook", "coffee", "schedule", "background", "process" ]
+  "keywords": [
+    "sails",
+    "sailsjs",
+    "agenda",
+    "jobs",
+    "hook",
+    "coffee",
+    "schedule",
+    "background",
+    "process"
+  ]
 }

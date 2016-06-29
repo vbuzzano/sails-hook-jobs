@@ -1,10 +1,12 @@
+var CronJob = require('cron').CronJob;
+
 module.exports = function(sails) {
 
   var Agenda = require('agenda'),
     util   = require('util'),
     _      = require('lodash'),
     os     = require("os"),
-    agenda = new Agenda()
+    agenda = new Agenda();
 
   agenda.sails = sails;
 
@@ -19,19 +21,19 @@ module.exports = function(sails) {
 
   // return hook
   return {
-    
+
     // expose agenda in sails.hooks.jobs.agenda
     jobs: agenda,
-    
+
     // Defaults config
     defaults: {
 
       jobs: {
         "globalJobsObjectName": "Jobs",
         "jobsDirectory": "api/jobs",
-        "db": { 
+        "db": {
             "address"    : "localhost:27017/jobs",
-            "collection" : "agendaJobs" 
+            "collection" : "agendaJobs"
         },
         "name": os.hostname() + '-' + process.pid,
         "processEvery": "1 minutes",
@@ -83,7 +85,7 @@ module.exports = function(sails) {
 
       // Lets wait on some of the sails core hooks to
       // finish loading before we load our hook
-      // that talks about cats. 
+      // that talks about cats.
       var eventsToWaitFor = [];
 
       if (sails.hooks.orm)
@@ -93,13 +95,13 @@ module.exports = function(sails) {
         eventsToWaitFor.push('hook:pubsub:loaded');
 
       sails.after(eventsToWaitFor, function(){
-        
+
 //        if (jobs.length > 0) {
           // start agenda
           agenda.start();
           sails.log.verbose("sails jobs started")
 //        }
-        
+
         // Now we will return the callback and our hook
         // will be usable.
         return cb();
@@ -145,8 +147,18 @@ module.exports = function(sails) {
                 agenda.now(_name, _job.data);
                 log += " and started";
               } else {
-                error = true;
-                log += " but frequency is not supported";
+                //last test for freq to see if its a cron string.
+                try{
+                  //This will throw an error when freq is not a cron string
+                  new CronJob(freq);
+                  //No error is thrown, so continue with creating an agenda.
+                  agenda.every(freq, _name, _job.data);
+                  log += " and scheduled for this(these) crontime(s) "+ "freq";
+                }catch(err){
+                  //failed to parse the string as a cronTime(s)
+                  error = true;
+                  log += ". But the frequency, '" + freq + "' is not supported";
+                }
               }
             }
           }
@@ -156,7 +168,7 @@ module.exports = function(sails) {
         } else {
           hook.initJobs(job, namespace + "." + name);
         }
-      })
+      });
     }
   }
 };
