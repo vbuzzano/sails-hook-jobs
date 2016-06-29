@@ -1,4 +1,4 @@
-# sails-hook-agenda
+# sails-hook-jobs
 
 Sails JS hook to add async background agenda.
 
@@ -7,7 +7,7 @@ This project use "agenda" as the job engine
  - npmjs: https://www.npmjs.com/package/agenda
 
 Agenda is a light-weight job scheduling library for Node.js. And it's use mongodb.
-
+a
 ## Install
 
 If your are using sails 0.11.x you just need to install it.
