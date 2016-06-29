@@ -8,17 +8,11 @@ This project use "agenda" as the job engine
 
 Agenda is a light-weight job scheduling library for Node.js. And it's use mongodb.
 
-### FORKED FROM [sails-hook-jobs](https://github.com/vbuzzano/sails-hook-jobs)
-This fork has support for **cron strings** which is not available in sails-hook-jobs.
-The all cron strings supported by agenda are available now.
-
-
-
 ## Install
 
 If your are using sails 0.11.x you just need to install it.
 
-    npm install sails-hook-agenda
+    npm install sails-hook-jobs
 
 for sails 0.10.x, create a folder 'jobs' in your api/hooks folder and copy index.js from this project.
 
