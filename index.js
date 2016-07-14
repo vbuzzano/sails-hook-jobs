@@ -48,17 +48,6 @@ module.exports = function(sails) {
       var hook = this
         , config = sails.config.jobs
 
-     // init agenda
-      agenda
-        .database(config.db.address, config.db.collection)
-        .name(config.name)
-        .processEvery(config.processEvery)
-        .maxConcurrency(config.maxConcurrency)
-        .defaultConcurrency(config.defaultConcurrency)
-        .defaultLockLifetime(config.defaultLockLifetime)
-
-      global[config.globalJobsObjectName] = agenda;
-
       // Enable jobs using coffeescript
       try {
         require('coffee-script/register');
@@ -72,40 +61,53 @@ module.exports = function(sails) {
         }
       }
 
-      // Find all jobs
-      var jobs = require('include-all')({
-          dirname     : sails.config.appPath + '/' + config.jobsDirectory,
-          filter      : /(.+Job).(?:js|coffee)$/,
-          excludeDirs : /^\.(git|svn)$/,
-          optional    : true
-      });
+     // init agenda
+      agenda
+        .database(config.db.address, config.db.collection,{},function(err, collection) {
 
-      // init jobs
-      hook.initJobs(jobs);
+          // Find all jobs
+          var jobs = require('include-all')({
+              dirname     : sails.config.appPath + '/' + config.jobsDirectory,
+              filter      : /(.+Job).(?:js|coffee)$/,
+              excludeDirs : /^\.(git|svn)$/,
+              optional    : true
+          });
 
-      // Lets wait on some of the sails core hooks to
-      // finish loading before we load our hook
-      // that talks about cats.
-      var eventsToWaitFor = [];
+          // init jobs
+          hook.initJobs(jobs);
 
-      if (sails.hooks.orm)
-        eventsToWaitFor.push('hook:orm:loaded');
+          // Lets wait on some of the sails core hooks to
+          // finish loading before we load our hook
+          // that talks about cats.
+          var eventsToWaitFor = [];
 
-      if (sails.hooks.pubsub)
-        eventsToWaitFor.push('hook:pubsub:loaded');
+          if (sails.hooks.orm)
+            eventsToWaitFor.push('hook:orm:loaded');
 
-      sails.after(eventsToWaitFor, function(){
+          if (sails.hooks.pubsub)
+            eventsToWaitFor.push('hook:pubsub:loaded');
 
-//        if (jobs.length > 0) {
-          // start agenda
-          agenda.start();
-          sails.log.verbose("sails jobs started")
-//        }
+          sails.after(eventsToWaitFor, function(){
 
-        // Now we will return the callback and our hook
-        // will be usable.
-        return cb();
-      });
+    //        if (jobs.length > 0) {
+              // start agenda
+              agenda.start();
+              sails.log.verbose("sails jobs started")
+    //        }
+
+            // Now we will return the callback and our hook
+            // will be usable.
+            return cb();
+          });
+
+        })
+        .name(config.name)
+        .processEvery(config.processEvery)
+        .maxConcurrency(config.maxConcurrency)
+        .defaultConcurrency(config.defaultConcurrency)
+        .defaultLockLifetime(config.defaultLockLifetime)
+
+      global[config.globalJobsObjectName] = agenda;
     },
 
     /**
