@@ -2,19 +2,18 @@
 
 Sails JS hook to add async background agenda.
 
-This project use "agenda" as the job engine  
+This project use "agenda" as the job engine
  - github: https://github.com/rschmukler/agenda
  - npmjs: https://www.npmjs.com/package/agenda
 
 Agenda is a light-weight job scheduling library for Node.js. And it's use mongodb.
 a
+
+This hook has been tested with sails 0.12.3
+
 ## Install
 
-If your are using sails 0.11.x you just need to install it.
-
     npm install sails-hook-jobs
-
-for sails 0.10.x, create a folder 'jobs' in your api/hooks folder and copy index.js from this project.
 
 ## Configuration
 
@@ -28,16 +27,16 @@ Copy this configurations file and save it to config/jobs.js
      * https://github.com/vbuzzano/sails-hook-jobs
      */
     module.exports.jobs = {
-    
+
       // Where are jobs files
       "jobsDirectory": "api/jobs",
 
-      // agenda configuration. 
+      // agenda configuration.
       // for more details about configuration,
       // check https://github.com/rschmukler/agenda
-      "db": { 
+      "db": {
         "address"    : "localhost:27017/jobs",
-        "collection" : "agendaJobs" 
+        "collection" : "agendaJobs"
       },
       "name": "process name",
       "processEvery": "10 seconds",
@@ -53,27 +52,27 @@ Simply create a js file (name ending with Job.js, eg: myJob.js) in api/jobs or i
 
     module.exports = function(agenda) {
         var job = {
-        
-            // job name (optional) if not set, 
+
+            // job name (optional) if not set,
             // Job name will be the file name or subfolder.filename (without .js)
             //name: 'Foo',
-    
+
             // set true to disabled this hob
             //disabled: false,
-    
+
             // method can be 'every <interval>', 'schedule <when>' or now
             //frequency supports cron strings
             frequency: 'every 5 seconds',
-    
+
             // Jobs options
             //options: {
                 // priority: highest: 20, high: 10, default: 0, low: -10, lowest: -20
                 //priority: 'highest'
             //},
-            
-            // Jobs data 
+
+            // Jobs data
             //data: {},
-            
+
             // execute job
             run: function(job, done) {
                 console.log("Foo job executed");
