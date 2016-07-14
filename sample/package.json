@@ -1,8 +1,8 @@
 {
   "name": "sample",
   "private": true,
-  "version": "0.0.0",
-  "description": "a Sails application",
+  "version": "0.1.0",
+  "description": "Jobs Application Sample for Sails 0.12.3",
   "keywords": [],
   "dependencies": {
     "sails": "~0.12.3",
