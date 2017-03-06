@@ -20,10 +20,10 @@
     "isHook": true
   },
   "dependencies": {
-    "agenda": "^0.8.1",
+    "agenda": "^0.9.0",
     "cron": "^1.1.0",
     "include-all": "^0.1.6",
-    "lodash": "^4.13.1"
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "sails": "~0.12.3"

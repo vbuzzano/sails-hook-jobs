@@ -3,21 +3,11 @@ var CronJob = require('cron').CronJob;
 module.exports = function(sails) {
 
   var Agenda = require('agenda'),
-    util   = require('util'),
     _      = require('lodash'),
     os     = require("os"),
-    agenda = new Agenda();
+    agenda = null;
 
-  agenda.sails = sails;
 
-  var stopServer = function() {
-    agenda.stop(function() {
-      console.log("agenda stopped");
-    });
-  };
-
-  sails.on("lower", stopServer);
-  sails.on("lowering", stopServer);
 
   // return hook
   return {
@@ -46,7 +36,28 @@ module.exports = function(sails) {
     // Runs automatically when the hook initializes
     initialize: function (cb) {
       var hook = this
-        , config = sails.config.jobs
+        , config = sails.config.jobs;
+
+
+      agenda = new Agenda({
+        db: {
+          address: config.db.address,
+          collection: config.db.collection
+        }
+      });
+
+      agenda.sails = sails;
+
+      hook.jobs = agenda;
+
+      var stopServer = function() {
+        agenda.stop(function() {
+          console.log("agenda stopped");
+        });
+      };
+
+      sails.on("lower", stopServer);
+      sails.on("lowering", stopServer);
 
       // Enable jobs using coffeescript
       try {
@@ -61,51 +72,49 @@ module.exports = function(sails) {
         }
       }
 
-     // init agenda
-      agenda
-        .database(config.db.address, config.db.collection,{},function(err, collection) {
+      // init agenda
+      agenda.on('ready', function() {
+        // Find all jobs
+        var jobs = require('include-all')({
+          dirname     : sails.config.appPath + '/' + config.jobsDirectory,
+          filter      : /(.+Job).(?:js|coffee)$/,
+          excludeDirs : /^\.(git|svn)$/,
+          optional    : true
+        });
 
-          // Find all jobs
-          var jobs = require('include-all')({
-              dirname     : sails.config.appPath + '/' + config.jobsDirectory,
-              filter      : /(.+Job).(?:js|coffee)$/,
-              excludeDirs : /^\.(git|svn)$/,
-              optional    : true
-          });
+        // init jobs
+        hook.initJobs(jobs);
 
-          // init jobs
-          hook.initJobs(jobs);
+        // Lets wait on some of the sails core hooks to
+        // finish loading before we load our hook
+        // that talks about cats.
+        var eventsToWaitFor = [];
 
-          // Lets wait on some of the sails core hooks to
-          // finish loading before we load our hook
-          // that talks about cats.
-          var eventsToWaitFor = [];
+        if (sails.hooks.orm)
+          eventsToWaitFor.push('hook:orm:loaded');
 
-          if (sails.hooks.orm)
-            eventsToWaitFor.push('hook:orm:loaded');
+        if (sails.hooks.pubsub)
+          eventsToWaitFor.push('hook:pubsub:loaded');
 
-          if (sails.hooks.pubsub)
-            eventsToWaitFor.push('hook:pubsub:loaded');
+        sails.after(eventsToWaitFor, function(){
 
-          sails.after(eventsToWaitFor, function(){
+//        if (jobs.length > 0) {
+          // start agenda
+          agenda.start();
+          sails.log.verbose("sails jobs started");
+//        }
 
-    //        if (jobs.length > 0) {
-              // start agenda
-              agenda.start();
-              sails.log.verbose("sails jobs started")
-    //        }
+          // Now we will return the callback and our hook
+          // will be usable.
+          return cb();
+        });
 
-            // Now we will return the callback and our hook
-            // will be usable.
-            return cb();
-          });
-
-        })
-        .name(config.name)
-        .processEvery(config.processEvery)
-        .maxConcurrency(config.maxConcurrency)
-        .defaultConcurrency(config.defaultConcurrency)
-        .defaultLockLifetime(config.defaultLockLifetime)
+      })
+      .name(config.name)
+      .processEvery(config.processEvery)
+      .maxConcurrency(config.maxConcurrency)
+      .defaultConcurrency(config.defaultConcurrency)
+      .defaultLockLifetime(config.defaultLockLifetime);
 
       global[config.globalJobsObjectName] = agenda;
     },
@@ -114,9 +123,9 @@ module.exports = function(sails) {
      * Function that initialize jobs
      */
     initJobs: function(jobs, namespace) {
-      var hook = this
+      var hook = this;
       if (!namespace) namespace = "jobs";
-      sails.log.verbose("looking for job in " + namespace + "... ")
+      sails.log.verbose("looking for job in " + namespace + "... ");
       _.forEach(jobs, function(job, name){
         if (typeof job === 'function') {
           var log = ""
@@ -172,5 +181,5 @@ module.exports = function(sails) {
         }
       });
     }
-  }
+  };
 };
