@@ -30,23 +30,24 @@ module.exports.http = {
   *                                                                          *
   ***************************************************************************/
 
-    // order: [
-    //   'startRequestTimer',
-    //   'cookieParser',
-    //   'session',
-    //   'myRequestLogger',
-    //   'bodyParser',
-    //   'handleBodyParserError',
-    //   'compress',
-    //   'methodOverride',
-    //   'poweredBy',
-    //   '$custom',
-    //   'router',
-    //   'www',
-    //   'favicon',
-    //   '404',
-    //   '500'
-    // ],
+     order: [
+       'startRequestTimer',
+       'cookieParser',
+       'session',
+       'myRequestLogger',
+       'bodyParser',
+       'handleBodyParserError',
+       'compress',
+       'methodOverride',
+       'poweredBy',
+       '$custom',
+       'router',
+       'jobsUI',
+       'www',
+       'favicon',
+       '404',
+       '500'
+     ],
 
   /****************************************************************************
   *                                                                           *
@@ -59,6 +60,12 @@ module.exports.http = {
     //     return next();
     // }
 
+    myRequestLogger: function (req, res, next) {
+      console.log("Requested :: ", req.method, req.url);
+      return next();
+    },
+
+    jobsUI: require("./../api/hooks/jobsUI/middleware.js")(),
 
   /***************************************************************************
   *                                                                          *
