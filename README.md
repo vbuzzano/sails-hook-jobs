@@ -57,7 +57,7 @@ Simply create a js file (name ending with Job.js, eg: myJob.js) in api/jobs or i
             // Job name will be the file name or subfolder.filename (without .js)
             //name: 'Foo',
 
-            // set true to disabled this hob
+            // set true to disabled this job
             //disabled: false,
 
             // method can be 'every <interval>', 'schedule <when>' or now
