@@ -19,6 +19,7 @@ module.exports = function(sails) {
     defaults: {
 
       jobs: {
+        "injectInGlobalSpace": true,
         "globalJobsObjectName": "Jobs",
         "jobsDirectory": "api/jobs",
         "db": {
@@ -97,12 +98,8 @@ module.exports = function(sails) {
           eventsToWaitFor.push('hook:pubsub:loaded');
 
         sails.after(eventsToWaitFor, function(){
-
-//        if (jobs.length > 0) {
-          // start agenda
           agenda.start();
           sails.log.verbose("sails jobs started");
-//        }
 
           // Now we will return the callback and our hook
           // will be usable.
@@ -116,7 +113,8 @@ module.exports = function(sails) {
       .defaultConcurrency(config.defaultConcurrency)
       .defaultLockLifetime(config.defaultLockLifetime);
 
-      global[config.globalJobsObjectName] = agenda;
+      if (config.injectInGlobalSpace)
+        global[config.globalJobsObjectName] = agenda;
     },
 
     /**
@@ -133,12 +131,12 @@ module.exports = function(sails) {
             , _dn   = namespace + "." + name
             , _name = _job.name || _dn.substr(_dn.indexOf('.') +1);
 
+          var error = false;
           if (_job.disabled) {
             log += "-> Disabled Job '" + _name + "' found in '" + namespace + "." + name + "'.";
           } else {
             var options = (typeof _job.options === 'object')?_job.options:{}
-              , freq = _job.frequency
-              , error = false;
+              , freq = _job.frequency;
 
             if (typeof _job.run === "function")
               agenda.define(_name, options, _job.run);
@@ -146,11 +144,11 @@ module.exports = function(sails) {
             log += "-> Job '" + _name + "' found in '" + namespace + "." + name + "', defined in agenda";
             if (typeof freq === 'string') {
               freq = freq.trim().toLowerCase();
-              if (freq.indexOf('every') == 0) {
+              if (freq.indexOf('every') === 0) {
                 var interval = freq.substr(6).trim();
                 agenda.every(interval, _name, _job.data);
                 log += " and will run " + freq;
-              } else if (freq.indexOf('schedule') == 0) {
+              } else if (freq.indexOf('schedule') === 0) {
                 var when = freq.substr(9).trim();
                 agenda.schedule(when, _name, _job.data);
                 log += " and scheduled " + when;
