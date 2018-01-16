@@ -58,7 +58,7 @@ module.exports = function(sails) {
         });
       };
 
-      if (config.enviromentToRunIn && process.env.NODE_ENV == config.enviromentToRunIn) {
+      if (config.enviromentToRunIn && sails.config.environment == config.enviromentToRunIn) {
         sails.on("lower", stopServer);
         sails.on("lowering", stopServer);
       }
@@ -101,10 +101,7 @@ module.exports = function(sails) {
           eventsToWaitFor.push('hook:pubsub:loaded');
 
         sails.after(eventsToWaitFor, function(){
-
-          sails.log.verbose('sails hooks event finished ');
-          sails.log.verbose('sails enviroment: ', process.env.NODE_ENV);
-          if (config.enviromentToRunIn && process.env.NODE_ENV == config.enviromentToRunIn) {
+          if (config.enviromentToRunIn && sails.config.environment == config.enviromentToRunIn) {
             // start agenda
             agenda.start();
             sails.log.verbose("sails jobs started");
