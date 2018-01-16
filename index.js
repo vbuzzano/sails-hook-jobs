@@ -31,7 +31,7 @@ module.exports = function(sails) {
         "defaultConcurrency": 5,
         "defaultLockLifetime": 10000,
         // enables run this hook only inside a separete worker.
-        // "enviroment_to_runin": 'JOBS_RUNNER'
+        // "enviromentToRunIn": 'JOBS_RUNNER'
       }
     },
 
@@ -58,7 +58,7 @@ module.exports = function(sails) {
         });
       };
 
-      if (config.enviroment_to_runin && sails.config.environment == config.enviroment_to_runin) {
+      if (config.enviromentToRunIn && sails.config.environment == config.enviromentToRunIn) {
         sails.on("lower", stopServer);
         sails.on("lowering", stopServer);
       }
@@ -102,7 +102,7 @@ module.exports = function(sails) {
 
         sails.after(eventsToWaitFor, function(){
 
-        if (config.enviroment_to_runin && sails.config.environment == config.enviroment_to_runin) {
+        if (config.enviromentToRunIn && sails.config.environment == config.enviromentToRunIn) {
           // start agenda
           agenda.start();
           sails.log.verbose("sails jobs started");
