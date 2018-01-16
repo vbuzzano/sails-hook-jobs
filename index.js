@@ -102,11 +102,13 @@ module.exports = function(sails) {
 
         sails.after(eventsToWaitFor, function(){
 
-        if (config.enviromentToRunIn && sails.config.environment == config.enviromentToRunIn) {
-          // start agenda
-          agenda.start();
-          sails.log.verbose("sails jobs started");
-        }
+          sails.log.verbose('sails hooks event finished ');
+          sails.log.verbose('sails enviroment: ', sails.config.environment);
+          if (config.enviromentToRunIn && sails.config.environment == config.enviromentToRunIn) {
+            // start agenda
+            agenda.start();
+            sails.log.verbose("sails jobs started");
+          }
 
           // Now we will return the callback and our hook
           // will be usable.
