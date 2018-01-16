@@ -30,6 +30,8 @@ module.exports = function(sails) {
         "maxConcurrency": 20,
         "defaultConcurrency": 5,
         "defaultLockLifetime": 10000,
+        // enables run this hook only inside a separete worker.
+        // "enviroment_to_runin": 'JOBS_RUNNER'
       }
     },
 
@@ -56,8 +58,10 @@ module.exports = function(sails) {
         });
       };
 
-      sails.on("lower", stopServer);
-      sails.on("lowering", stopServer);
+      if (config.enviroment_to_runin && sails.config.environment == config.enviroment_to_runin) {
+        sails.on("lower", stopServer);
+        sails.on("lowering", stopServer);
+      }
 
       // Enable jobs using coffeescript
       try {
@@ -98,11 +102,11 @@ module.exports = function(sails) {
 
         sails.after(eventsToWaitFor, function(){
 
-//        if (jobs.length > 0) {
+        if (config.enviroment_to_runin && sails.config.environment == config.enviroment_to_runin) {
           // start agenda
           agenda.start();
           sails.log.verbose("sails jobs started");
-//        }
+        }
 
           // Now we will return the callback and our hook
           // will be usable.
