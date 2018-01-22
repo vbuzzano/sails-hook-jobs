@@ -11,6 +11,10 @@ a
 
 This hook has been tested with sails 0.12.3
 
+## Fork changes:
+
+ Added enviromentToRunIn to prevent running jobs in the main process.
+
 ## Install
 
     npm install sails-hook-jobs
@@ -42,7 +46,8 @@ Copy this configurations file and save it to config/jobs.js
       "processEvery": "10 seconds",
       "maxConcurrency": 20,
       "defaultConcurrency": 5,
-      "defaultLockLifetime": 10000
+      "defaultLockLifetime": 10000,
+      "enviromentToRunIn": "JOBS_RUNNER"
     };
 
 ## How to define and schedule jobs
