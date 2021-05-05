@@ -137,6 +137,7 @@ module.exports = function(sails) {
             log += "-> Disabled Job '" + _name + "' found in '" + namespace + "." + name + "'.";
           } else {
             var options = (typeof _job.options === 'object')?_job.options:{}
+              , jobOptions = (typeof _job.jobOptions === 'object')?_job.jobOptions:{}
               , freq = _job.frequency
               , error = false;
 
@@ -148,7 +149,7 @@ module.exports = function(sails) {
               freq = freq.trim().toLowerCase();
               if (freq.indexOf('every') == 0) {
                 var interval = freq.substr(6).trim();
-                agenda.every(interval, _name, _job.data);
+                agenda.every(interval, _name, _job.data, jobOptions);
                 log += " and will run " + freq;
               } else if (freq.indexOf('schedule') == 0) {
                 var when = freq.substr(9).trim();
@@ -163,7 +164,7 @@ module.exports = function(sails) {
                   //This will throw an error when freq is not a cron string
                   new CronJob(freq);
                   //No error is thrown, so continue with creating an agenda.
-                  agenda.every(freq, _name, _job.data);
+                  agenda.every(freq, _name, _job.data, jobOptions);
                   log += " and scheduled for this(these) crontime(s) "+ "freq";
                 }catch(err){
                   //failed to parse the string as a cronTime(s)
