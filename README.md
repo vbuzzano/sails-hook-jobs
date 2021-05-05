@@ -73,6 +73,13 @@ Simply create a js file (name ending with Job.js, eg: myJob.js) in api/jobs or i
             // Jobs data
             //data: {},
 
+            // Job Options
+            // jobOptions: {
+                // Timezone can only be used with job that's iterative
+                // works on frequency with 'every' prefix or have cron unix expression 
+                timezone: 'Europe/Berlin' // 
+            },
+
             // execute job
             run: function(job, done) {
                 console.log("Foo job executed");
